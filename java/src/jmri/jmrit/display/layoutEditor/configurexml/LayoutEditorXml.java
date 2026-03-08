@@ -708,9 +708,11 @@ public class LayoutEditorXml extends AbstractXmlAdapter {
         // this done after pack() to avoid sizing issues.
         for (jmri.jmrit.display.Positionable label : panel.getContents()) {
             var popup = label.getPopupUtility();
-            popup.setFontStyle(popup.getFontStyle());
+            if (popup != null) { // encountered in some testing
+                popup.setFontStyle(popup.getFontStyle());
+            }
         }
-
+        
         panel.resetDirty();
 
         // register the resulting panel for later configuration
