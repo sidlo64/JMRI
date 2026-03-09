@@ -217,7 +217,7 @@ public class Setup extends PropertyChangeSupport implements InstanceManagerAutoD
     private int buildReportFontSize = 10;
     private String manifestOrientation = PORTRAIT;
     private String switchListOrientation = PORTRAIT;
-    private SidesType sidesType = SidesType.ONE_SIDED;
+    private Sides sides = Sides.ONE_SIDED;
     private boolean printHeader = true;
     private Color pickupEngineColor = Color.black;
     private Color dropEngineColor = Color.black;
@@ -1167,23 +1167,12 @@ public class Setup extends PropertyChangeSupport implements InstanceManagerAutoD
         getDefault().manifestFontSize = size;
     }
 
-    public static SidesType getPrintDuplexSidesType() {
-        return getDefault().sidesType;
-    }
-    
     public static Sides getPrintDuplexSides() {
-        Sides sides = Sides.ONE_SIDED;
-        if (getPrintDuplexSidesType() == SidesType.TWO_SIDED_LONG_EDGE) {
-            sides = Sides.TWO_SIDED_LONG_EDGE;
-        } else if (getPrintDuplexSidesType() == SidesType.TWO_SIDED_SHORT_EDGE) {
-            sides = Sides.TWO_SIDED_SHORT_EDGE;
-        }
-        return sides;
+        return getDefault().sides;
     }
     
-
-    public static void setPrintDuplexSides(SidesType sidesType) {
-        getDefault().sidesType = sidesType;
+    public static void setPrintDuplexSides(Sides sides) {
+        getDefault().sides = sides;
     }
 
     public static boolean isPrintPageHeaderEnabled() {
@@ -2108,7 +2097,7 @@ public class Setup extends PropertyChangeSupport implements InstanceManagerAutoD
         values.setAttribute(Xml.SWITCH_LIST, getSwitchListOrientation());
 
         e.addContent(values = new Element(Xml.PRINT_DUPLEX));
-        values.setAttribute(Xml.NAME, getPrintDuplexSidesType().toString());
+        values.setAttribute(Xml.NAME, getPrintDuplexSides().toString());
 
         e.addContent(values = new Element(Xml.MANIFEST_COLORS));
         values.setAttribute(Xml.DROP_ENGINE_COLOR, getDropEngineTextColor());
@@ -2665,10 +2654,10 @@ public class Setup extends PropertyChangeSupport implements InstanceManagerAutoD
                 String sides = a.getValue();
                 log.debug("Print duplex: {}", sides);
                 if (sides.equals(SidesType.TWO_SIDED_LONG_EDGE.toString())) {
-                    setPrintDuplexSides(SidesType.TWO_SIDED_LONG_EDGE);
+                    setPrintDuplexSides(Sides.TWO_SIDED_LONG_EDGE);
                 }
                 if (sides.equals(SidesType.TWO_SIDED_SHORT_EDGE.toString())) {
-                    setPrintDuplexSides(SidesType.TWO_SIDED_SHORT_EDGE);
+                    setPrintDuplexSides(Sides.TWO_SIDED_SHORT_EDGE);
                 }
             }
         }
