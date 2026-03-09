@@ -167,7 +167,8 @@ public class TrainPrintManifest extends TrainCommon {
             line = line.replace(VERTICAL_LINE_CHAR, SPACE);
             
             //TODO fix how line length is calculated when writing out to file
-            if (line.length() > writer.getCharactersPerLine()) {
+            Integer charPerLine = writer.getCharactersPerLine();
+            if (charPerLine != null && line.length() > writer.getCharactersPerLine()) {
                 line = line.substring(0, writer.getCharactersPerLine());
             }
 
@@ -214,9 +215,13 @@ public class TrainPrintManifest extends TrainCommon {
                     break;
                 }
             }
+            Integer charPerLine = writer.getCharactersPerLine();
+            if (charPerLine == null) {
+                charPerLine = line.length();
+            }
             if (horizontialLineSeparatorFound) {
                 writer.write(writer.getCurrentLineNumber(), 0, writer.getCurrentLineNumber(),
-                        writer.getCharactersPerLine());
+                        charPerLine);
             }
         }
         return horizontialLineSeparatorFound;

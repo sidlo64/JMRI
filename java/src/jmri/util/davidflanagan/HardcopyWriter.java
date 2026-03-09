@@ -860,9 +860,10 @@ public class HardcopyWriter extends Writer implements Printable {
      * @return the width of a character, or null if the font is not monospaced
      */
     public Float getCharWidth() {
-        if (!isMonospaced()) {
-            return null;
-        }
+// TODO DAB temp fix to prevent NPE when printing non-monospaced fonts
+//        if (!isMonospaced()) {
+//            return null;
+//        }
         return this.charwidth;
     }
 
@@ -912,9 +913,10 @@ public class HardcopyWriter extends Writer implements Printable {
      *         monospaced
      */
     public Integer getCharactersPerLine() {
-        if (!isMonospaced()) {
-            return null;
-        }
+     // TODO DAB temp fix to prevent NPE when printing non-monospaced fonts
+//        if (!isMonospaced()) {
+//            return null;
+//        }
         int chars_per_line = (int) (width / charwidth);
         return chars_per_line;
     }
