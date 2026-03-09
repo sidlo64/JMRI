@@ -113,7 +113,7 @@ public class TrainPrintManifest extends TrainCommon {
             writer.pageBreak();
         }
         // check for exact page break
-        if (writer.getLinesPerPage() - writer.getCurrentLineNumber() + 1 == lineSize) {
+        if (writer.getLinesPerPage() - writer.getCurrentLineNumber() == lineSize) {
             // eliminate blank line after page break
             String s = lines.get(lines.size() - 1);
             if (s.isBlank()) {
