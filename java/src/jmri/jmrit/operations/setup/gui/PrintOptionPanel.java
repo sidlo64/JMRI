@@ -351,7 +351,7 @@ public class PrintOptionPanel extends OperationsPreferencesPanel implements java
         switchListOrientationComboBox.setSelectedItem(Setup.getSwitchListOrientation());
 
         tabFormatCheckBox.setSelected(Setup.isTabEnabled());
-        printDuplexComboBox.setSelectedItem(Setup.getPrintDuplexSides());
+        printDuplexComboBox.setSelectedItem(Setup.getPrintDuplexSidesType());
 
         formatSwitchListCheckBox.setSelected(Setup.isSwitchListFormatSameAsManifest());
         printLocCommentsCheckBox.setSelected(Setup.isPrintLocationCommentsEnabled());
@@ -876,7 +876,7 @@ public class PrintOptionPanel extends OperationsPreferencesPanel implements java
     public boolean isDirty() {
         if (!Setup.getFontName().equals(fontComboBox.getSelectedItem()) ||
                 Setup.getManifestFontSize() != (Integer) fontSizeComboBox.getSelectedItem() ||
-                Setup.getPrintDuplexSides() != printDuplexComboBox.getSelectedItem() ||
+                Setup.getPrintDuplexSidesType() != printDuplexComboBox.getSelectedItem() ||
                 !Setup.getManifestOrientation().equals(manifestOrientationComboBox.getSelectedItem()) ||
                 !Setup.getSwitchListOrientation().equals(switchListOrientationComboBox.getSelectedItem()) ||
                 !Setup.getManifestFormat().equals(manifestFormatComboBox.getSelectedItem()) ||

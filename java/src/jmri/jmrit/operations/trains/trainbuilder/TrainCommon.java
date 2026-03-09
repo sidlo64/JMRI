@@ -2295,6 +2295,7 @@ public class TrainCommon {
         if (charLength % 2 != 0) {
             charLength--; // make it even
         }
+        log.info("Number of character per line {}, fontName: {}, FontStyle {}. fontSize {}", charLength, fontName, fontStyle, fontSize);
         return charLength;
     }
 

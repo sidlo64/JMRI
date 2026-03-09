@@ -5,6 +5,7 @@ import java.awt.JobAttributes.SidesType;
 import java.io.IOException;
 import java.util.*;
 
+import javax.print.attribute.standard.Sides;
 import javax.swing.JComboBox;
 
 import org.jdom2.Element;
@@ -1166,9 +1167,20 @@ public class Setup extends PropertyChangeSupport implements InstanceManagerAutoD
         getDefault().manifestFontSize = size;
     }
 
-    public static SidesType getPrintDuplexSides() {
+    public static SidesType getPrintDuplexSidesType() {
         return getDefault().sidesType;
     }
+    
+    public static Sides getPrintDuplexSides() {
+        Sides sides = Sides.ONE_SIDED;
+        if (getPrintDuplexSidesType() == SidesType.TWO_SIDED_LONG_EDGE) {
+            sides = Sides.TWO_SIDED_LONG_EDGE;
+        } else if (getPrintDuplexSidesType() == SidesType.TWO_SIDED_SHORT_EDGE) {
+            sides = Sides.TWO_SIDED_SHORT_EDGE;
+        }
+        return sides;
+    }
+    
 
     public static void setPrintDuplexSides(SidesType sidesType) {
         getDefault().sidesType = sidesType;
@@ -2096,7 +2108,7 @@ public class Setup extends PropertyChangeSupport implements InstanceManagerAutoD
         values.setAttribute(Xml.SWITCH_LIST, getSwitchListOrientation());
 
         e.addContent(values = new Element(Xml.PRINT_DUPLEX));
-        values.setAttribute(Xml.NAME, getPrintDuplexSides().toString());
+        values.setAttribute(Xml.NAME, getPrintDuplexSidesType().toString());
 
         e.addContent(values = new Element(Xml.MANIFEST_COLORS));
         values.setAttribute(Xml.DROP_ENGINE_COLOR, getDropEngineTextColor());
