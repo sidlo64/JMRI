@@ -77,7 +77,7 @@ public class TrainPrintManifest extends TrainCommon {
                 }
             }
             
-            log.info("Number of character per line {}, fontName: {}, fontSize {}", writer.getCharactersPerLine(), fontName, fontSize);
+            log.debug("Number of characters per line {}, fontName: {}, fontSize {}", writer.getCharactersPerLine(), fontName, fontSize);
 
             List<String> lines = new ArrayList<>();
             String line;
