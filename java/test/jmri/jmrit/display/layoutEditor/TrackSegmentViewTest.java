@@ -36,6 +36,7 @@ public class TrackSegmentViewTest extends LayoutTrackViewTest {
         assertEquals(HitPointType.TRACK, segmentView.findHitPointType(ccc, false, false), "trackSegment.findHitPointType()");
         assertEquals(HitPointType.NONE, segmentView.findHitPointType(ccc, false, true), "trackSegment.findHitPointType()");
         assertEquals(HitPointType.TRACK, segmentView.findHitPointType(ccc, true, false), "trackSegment.findHitPointType()");
+        assertEquals(HitPointType.NONE, segmentView.findHitPointType(ccc, true, true), "trackSegment.findHitPointType()");
 
         Point2D ep1 = layoutEditor.getLayoutTrackView(segmentView.getConnect1())
                 .getCoordsForConnectionType(segmentView.getType1());
