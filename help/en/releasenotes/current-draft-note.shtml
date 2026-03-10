@@ -469,6 +469,8 @@
                 to mark a locomotive entry as having been inspected.</li>
             <li>Added a copy/cut/paste pop-up menu to text fields that 
                 didn't previously have a pop-up menu.
+            <li>Fixed a bug where certain roster entry contents would cause 
+                a crash.
         </ul>
 
    <h3>Dispatcher</h3>
