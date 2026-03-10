@@ -90,7 +90,7 @@
 
         <h4>LocoNet</h4>
             <ul>
-                <li></li>
+                <li>Added LNRP3 to some LocoNet Monitor message types.</li>
             </ul>
 
         <h4>Maple</h4>
