@@ -91,6 +91,7 @@
         <h4>LocoNet</h4>
             <ul>
                 <li>Added LNRP3 to some LocoNet Monitor message types.</li>
+                <li>Updated the LocoBuffer-USB and LocoBuffer-NG help.</li>
             </ul>
 
         <h4>Maple</h4>
