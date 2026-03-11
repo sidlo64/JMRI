@@ -2361,7 +2361,7 @@ public class TrainCommon {
 
     protected static final Dimension PAPER_MARGINS = new Dimension(84, 72);
 
-    protected static Dimension getPageSize(String orientation) {
+    public static Dimension getPageSize(String orientation) {
         // page size has been adjusted to account for margins of .5
         // Dimension(84, 72)
         Dimension pagesize = new Dimension(523, 720); // Portrait 8.5 x 11

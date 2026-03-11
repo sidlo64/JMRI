@@ -22083,8 +22083,6 @@ public class TrainBuilderTest extends OperationsTestCase {
         tmanager.setBuildMessagesEnabled(false);
         // disable build reports
         tmanager.setBuildReportEnabled(false);
-        // default font chars per line, prevents headless exception when using HardcopyWriter
-        tmanager.setHardcopyWriterLineLength("Monospaced", 0, 10, TrainCommon.getPageSize("Portrait"), false, 89);
 
         // register the car and engine types used
         ct.addName("Boxcar");
