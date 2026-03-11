@@ -5,13 +5,8 @@ import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
-import java.io.Writer;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 
 import javax.swing.*;
 
@@ -20,7 +15,6 @@ import jmri.jmrix.can.CanSystemConnectionMemo;
 import jmri.util.swing.JmriJOptionPane;
 
 import org.openlcb.*;
-import org.openlcb.cdi.cmd.*;
 import org.openlcb.cdi.impl.ConfigRepresentation;
 
 /**

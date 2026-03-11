@@ -46,7 +46,7 @@
       or 
       <a href="../../../jmri/jmrix/openlcb/swing/downloader/LoaderFrame.shtml">upgrading its firmware</a>
 
-      <p><span class="since">Since <a href="http://jmri.org/releasenotes/jmri5.15.4.shtml">JMRI 5.15.4</a></span>
+      <p><span class="since">Since <a href="http://jmri.org/releasenotes/jmri5.15.5.shtml">JMRI 5.15.5</a></span>
       If a node supports it, the
       "Backup" button on a row  will directly backup that node's configuration to a file.
       You can have as many of these running in parallel as you'd like, so you
@@ -93,7 +93,7 @@
         <li>a "Refresh" button that will reload the table from the network
         <li>a "Print Table" button that will print the current contents of the node table,
             including it's column sizing, sorting, etc
-        <li><span class="since">Since <a href="http://jmri.org/releasenotes/jmri5.15.4.shtml">JMRI 5.15.4</a></span>
+        <li><span class="since">Since <a href="http://jmri.org/releasenotes/jmri5.15.5.shtml">JMRI 5.15.5</a></span>
             an "Export CSV" button that will export the current contents of the node table
             in comma-separated variable format and
         <li>a "Help" button that will bring you to this page.
