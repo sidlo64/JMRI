@@ -156,6 +156,10 @@
                         <li>Blank lines are now accepted as comments in node backup files
                     </ol>
                 </li>
+                <li>The LCC/ChangeDefaultBackupFileName.py script has been updated to 
+                    include the node's event ID if no node name is available.  This
+                    will e.g. reduce confusion when backing up brand-new nodes.
+                </li>
             </ul>
 
         <h4>Powerline</h4>
@@ -518,8 +522,12 @@
         <ul>
             <li>Added a copy/cut/paste pop-up menu to text fields that 
                 didn't previously have a pop-up menu.
-            <li>Added "Print Table" and "Export CSV" buttons that
+            <li>Added "Print Table" and "Export CSV" global buttons that
                 do pretty much what they say.
+            <li>Added a "Backup" button to each row that will directly
+                back up the selected node to a file.  The directory
+                where that file will be placed can be set with the
+                "Set Backup Directory" action in the Settings menu.
         </ul>
 
     <h3>Logix</h3>
