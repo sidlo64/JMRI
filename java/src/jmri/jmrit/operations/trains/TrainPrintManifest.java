@@ -25,8 +25,6 @@ import jmri.util.davidflanagan.CompatibleHardcopyWriter;
 public class TrainPrintManifest extends TrainCommon {
 
     static final char SPACE = ' ';
-    static Integer charPerLine = null;
-    static int endCol = 0;
 
     /**
      * Print or preview a train Manifest or switch list.
@@ -79,11 +77,6 @@ public class TrainPrintManifest extends TrainCommon {
                     writer.write(icon.getImage(), new JLabel(icon));
                 }
             }
-
-            charPerLine = writer.getCharactersPerLine();
-            // bump the end column a bit for better alignment
-            endCol = charPerLine + 1;
-            log.debug("Number of characters per line {}, fontName: {}, fontSize {}", charPerLine, fontName, fontSize);
 
             List<String> lines = new ArrayList<>();
             String line;
@@ -173,14 +166,6 @@ public class TrainPrintManifest extends TrainCommon {
             printVerticalLineSeparator(writer, line);
             line = line.replace(VERTICAL_LINE_CHAR, SPACE);
 
-            //TODO fix how line length is calculated when writing out to file
-            if (writer.isMonospaced()) {
-
-                if (charPerLine != null && line.length() > charPerLine) {
-                    line = line.substring(0, charPerLine);
-                }
-            }
-
             if (color != null) {
                 writer.write(color, line + NEW_LINE);
                 continue;
@@ -225,6 +210,7 @@ public class TrainPrintManifest extends TrainCommon {
                 }
             }
             if (horizontialLineSeparatorFound) {
+                int endCol = writer.getCharactersPerLine() + 1;
                 writer.write(writer.getCurrentLineNumber(), 0, writer.getCurrentLineNumber(),
                         endCol);
             }
@@ -237,6 +223,7 @@ public class TrainPrintManifest extends TrainCommon {
             if (line.charAt(i) == VERTICAL_LINE_CHAR) {
                 // make a frame (two column format)
                 if (Setup.isTabEnabled()) {
+                    int endCol = writer.getCharactersPerLine() + 1;
                     writer.write(writer.getCurrentLineNumber(), 0, writer.getCurrentLineNumber() + 1, 0);
                     writer.write(writer.getCurrentLineNumber(), endCol,
                             writer.getCurrentLineNumber() + 1, endCol);

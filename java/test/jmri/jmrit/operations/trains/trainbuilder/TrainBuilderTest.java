@@ -6252,7 +6252,7 @@ public class TrainBuilderTest extends OperationsTestCase {
         BufferedReader in = JUnitOperationsUtil.getBufferedReader(buildReport);
 
         // any changes to the build report could cause this to fail
-        Assert.assertEquals("confirm number of lines in build report", 538, in.lines().count());
+        Assert.assertEquals("confirm number of lines in build report", 511, in.lines().count());
         in.close();
 
         // TODO search and confirm limit message in build report
@@ -6356,7 +6356,7 @@ public class TrainBuilderTest extends OperationsTestCase {
         BufferedReader in = JUnitOperationsUtil.getBufferedReader(buildReport);
 
         // any changes to the build report could cause this to fail
-        Assert.assertEquals("confirm number of lines in build report", 652, in.lines().count());
+        Assert.assertEquals("confirm number of lines in build report", 651, in.lines().count());
         in.close();
 
         JUnitOperationsUtil.checkOperationsShutDownTask();
@@ -22083,6 +22083,8 @@ public class TrainBuilderTest extends OperationsTestCase {
         tmanager.setBuildMessagesEnabled(false);
         // disable build reports
         tmanager.setBuildReportEnabled(false);
+        // default font chars per line, prevents headless exception when using HardcopyWriter
+        tmanager.setHardcopyWriterLineLength("Monospaced", 0, 10, TrainCommon.getPageSize("Portrait"), false, 89);
 
         // register the car and engine types used
         ct.addName("Boxcar");

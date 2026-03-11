@@ -820,9 +820,9 @@ public class HardcopyWriter extends Writer implements Printable {
             useFontSize = size;
             // if a page is pending, set the new font, else newpage() will
             if (currentPageCommands != null) {
-                record(new SetFont(font)); 
+                record(new SetFont(font));
+                refreshMetrics(page);
             }
-            refreshMetrics(page);
         }
     }
 
