@@ -329,13 +329,13 @@ For each, if it doesn't have the right milestone set, add the current milestone 
 ```
         git checkout master
         git pull
-        sed -i.bak s/5.15.3-SNAPSHOT/5.15.5-SNAPSHOT/g pom.xml
+        sed -i.bak s/5.15.4-SNAPSHOT/5.15.5-SNAPSHOT/g pom.xml
         head -10 pom.xml
 ```
 
 - Update the release.build property in `release.properties` to this release (numbers have to be manually updated to the last field now, so check the numbers in the following line)
 ```
-        sed -i.bak s/release.build=3/release.build=4/g release.properties
+        sed -i.bak s/release.build=4/release.build=5/g release.properties
         head -10 release.properties
 ```
  - Check that both those edits left 5.15.5 defined in the two files
@@ -462,6 +462,8 @@ First JMRI 5.15.5 files are available in the usual way at:
 
 https://builds.jmri.org/jenkins/job/testreleases/job/5.15.5/
 
+The Jenkins machine is currently getting a heavy load of web-spider requests, and you may get errors accessing that page.  I'm sorry about that, but I don't know what else to do about that. Please try again in that case.
+
 Feedback appreciated! I would like to release this later today or tomorrow morning if the files are OK on macOS, Linux and Windows.
 
 Note that the purpose of this check is to make sure that the _files_ were built OK.  If you find any new problems in the code, great, let's fix those for the next test release.  (Or even better, let's learn to do better functional checking of the development releases leading up to the test release build)
@@ -542,7 +544,11 @@ Run a script to download the created files, create checksums and create text for
 ```
 ./scripts/releasesummary 5.15.5
 ```
-(This attempts a very large download.  If it fails, [download the files](https://builds.jmri.org/jenkins/job/testreleases/job/5.15.5/) individually and put them in a `release/` directory in your working directory, then repeat the command)
+(This attempts a very large download.  If it fails, [download the files](https://builds.jmri.org/jenkins/job/testreleases/job/5.15.5/) individually     
+
+    https://builds.jmri.org/jenkins/job/testreleases/job/5.15.5/
+
+and put them in a `release/` directory in your working directory, then repeat the command)
 
 This will print a bunch of text in several sections. Edit that into the website/releaselist, release note files and GitHub info below in this file.
 
