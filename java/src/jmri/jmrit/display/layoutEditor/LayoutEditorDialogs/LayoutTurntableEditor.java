@@ -135,7 +135,7 @@ public class LayoutTurntableEditor extends LayoutTrackEditor {
             panel2a.add(editLayoutTurntableSegmentEditBlockButton = new JButton(Bundle.getMessage("EditBlock", "")));  // NOI18N
             editLayoutTurntableSegmentEditBlockButton.addActionListener(this::editLayoutTurntableEditBlockPressed);
             editLayoutTurntableSegmentEditBlockButton.setToolTipText(Bundle.getMessage("EditBlockHint", "")); // empty value for block 1  // NOI18N
-            log.info("mainline0 {}", layoutTurntable.isMainline());
+            log.debug("mainline0 {}", layoutTurntable.isMainline());
 
             boolean mainlineSaved = layoutTurntable.isMainline();  // the listener may be active so preserve the current state
             editLayoutTurntableMainlineComboBox.removeAllItems();
@@ -144,7 +144,7 @@ public class LayoutTurntableEditor extends LayoutTrackEditor {
             layoutTurntable.setMainline(mainlineSaved);  // restore the current state
 
             panel2a.add(editLayoutTurntableMainlineComboBox);
-            log.info("mainline1 {}", layoutTurntable.isMainline());
+            log.debug("mainline1 {}", layoutTurntable.isMainline());
 
             headerPane.add(panel2a);
 
@@ -202,10 +202,10 @@ public class LayoutTurntableEditor extends LayoutTrackEditor {
 
         if (layoutTurntable.isMainline()) {
             editLayoutTurntableMainlineComboBox.setSelectedIndex(0);
-            log.info("setting mainline");
+            log.debug("setting mainline");
         } else {
             editLayoutTurntableMainlineComboBox.setSelectedIndex(1);
-            log.info("setting sideline");
+            log.debug("setting sideline");
         }
 
         editLayoutTurntableMainlineComboBox.addActionListener((java.awt.event.ActionEvent e) -> {
