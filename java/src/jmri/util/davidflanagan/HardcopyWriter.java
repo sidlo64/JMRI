@@ -78,7 +78,6 @@ public class HardcopyWriter extends Writer implements Printable {
     protected ImageIcon previewIcon = new ImageIcon();
     protected JLabel previewLabel = new JLabel();
     protected JToolBar previewToolBar = new JToolBar();
-    protected Frame frame;
     protected JButton nextButton;
     protected JButton previousButton;
     protected JButton closeButton;
@@ -97,6 +96,8 @@ public class HardcopyWriter extends Writer implements Printable {
     // save state between invocations of write()
     private boolean last_char_was_return = false;
 
+    public static String NO_PRINTING_PRINTER = "skipDialog";
+
     // Job and Page attributes
     PrintRequestAttributeSet attributes = new HashPrintRequestAttributeSet();
 
@@ -109,7 +110,7 @@ public class HardcopyWriter extends Writer implements Printable {
     /**
      * Constructor for HardcopyWriter
      * 
-     * @param frame         The AWT Frame
+     * @param frame         The AWT Frame (only required for preview mode)
      * @param jobname       The name to print in the title of the page
      * @param fontName      The name of the font to use (if null, default is
      *                      used)
@@ -144,20 +145,15 @@ public class HardcopyWriter extends Writer implements Printable {
         initalize(frame, jobname, fontName, fontStyle, fontsize, leftmargin, rightmargin, topmargin, bottommargin,
                 isPreview, printerName, isLandscape, isPrintHeader, sides, pagesize);
     }
-    
+
     // this constructor is only used to determine number of character per line
     public HardcopyWriter(String fontName, Integer fontStyle, Integer fontsize, double leftmargin, double rightmargin,
             double topmargin, double bottommargin, Boolean isLandscape, Dimension pagesize)
             throws HardcopyWriter.PrintCanceledException {
-        
-        // TODO this should be changed to only use the metrics for font and page size
-        showPreview = false;
-        
-        initalize(new Frame(), "", fontName, fontStyle, fontsize, leftmargin, rightmargin, topmargin, bottommargin,
-                true, null, isLandscape, false, null, pagesize);
-
+        initalize(null, "", fontName, fontStyle, fontsize, leftmargin, rightmargin, topmargin, bottommargin,
+                false, NO_PRINTING_PRINTER, isLandscape, false, null, pagesize);
     }
-        
+
     private void initalize(Frame frame, String jobname, String fontName, Integer fontStyle, Integer fontsize,
             double leftmargin, double rightmargin,
             double topmargin, double bottommargin, boolean isPreview, String printerName, Boolean isLandscape,
@@ -176,11 +172,14 @@ public class HardcopyWriter extends Writer implements Printable {
         }
 
         this.isPreview = isPreview;
-        this.frame = frame;
 
         // Get the screen resolution and cache it. This also allows us to override
         // the default resolution for testing purposes.
-        getScreenResolution();
+        if (frame == null) {
+            screenResolution = 1;
+        } else {
+            getScreenResolution();
+        }
 
         if (pagesize == null) {
             pagesizePixels = getPagesizePixels();
@@ -229,7 +228,7 @@ public class HardcopyWriter extends Writer implements Printable {
 
             printerJob.setPrintable(this, pageFormat);
 
-            if ("SkipDialog".equals(printerName) || printerJob.printDialog(attributes)) {
+            if (NO_PRINTING_PRINTER.equals(printerName) || printerJob.printDialog(attributes)) {
                 PageFormat updatedPf = printerJob.validatePage(pageFormat);
 
                 double widthPts = updatedPf.getPaper().getWidth();
@@ -285,7 +284,7 @@ public class HardcopyWriter extends Writer implements Printable {
 
         // header font info
         headerfont = new Font("SansSerif", Font.ITALIC, useFontSize);
-        headermetrics = frame.getFontMetrics(headerfont);
+        headermetrics = g.getFontMetrics(headerfont);
         headery = y0 - (int) (0.125 * 72) - headermetrics.getHeight() + headermetrics.getAscent();
         titleTop = headery - headermetrics.getAscent();
 
@@ -832,7 +831,7 @@ public class HardcopyWriter extends Writer implements Printable {
      * @param g the graphics context
      */
     private void refreshMetrics(Graphics g) {
-        metrics = frame.getFontMetrics(font);
+        metrics = g.getFontMetrics(font);
         lineheight = metrics.getHeight();
         lineascent = metrics.getAscent();
 
