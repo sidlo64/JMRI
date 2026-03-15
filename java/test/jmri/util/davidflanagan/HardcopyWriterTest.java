@@ -140,10 +140,9 @@ public class HardcopyWriterTest {
 
     @Test
     public void testTabHandling() throws IOException, HardcopyWriter.ColumnException {
-        JFrame frame = new JFrame();
         HardcopyWriter hcw = null;
         try {
-            hcw = new HardcopyWriter(frame, "test", null, null, 10, .5 * 72, .5 * 72, .5 * 72, .5 * 72, false,
+            hcw = new HardcopyWriter(null, "test", null, null, 10, .5 * 72, .5 * 72, .5 * 72, .5 * 72, false,
                     HardcopyWriter.NO_PRINTING_PRINTER,
                     null, false, null, new Dimension((int) (8.5 * 72), (int) (11.0 * 72)));
             Assertions.assertNotNull(hcw, "HardcopyWriter constructor");
