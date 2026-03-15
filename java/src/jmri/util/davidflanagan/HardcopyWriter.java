@@ -831,13 +831,13 @@ public class HardcopyWriter extends Writer implements Printable {
      * @param g the graphics context
      */
     private void refreshMetrics(Graphics g) {
-        metrics = g.getFontMetrics(font);
-        lineheight = metrics.getHeight();
-        lineascent = metrics.getAscent();
-
         if (g == null) {
             g = getGraphics();
         }
+
+        metrics = g.getFontMetrics(font);
+        lineheight = metrics.getHeight();
+        lineascent = metrics.getAscent();
 
         if (g instanceof Graphics2D) {
             Graphics2D g2d = (Graphics2D) g;
