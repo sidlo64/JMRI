@@ -247,6 +247,9 @@ public class HardcopyWriter extends Writer implements Printable {
                 pagesizePixels = new Dimension((int) (pagesizePoints.width * getScreenResolution() / 72.0),
                         (int) (pagesizePoints.height * getScreenResolution() / 72.0));
 
+                if (NO_PRINTING_PRINTER.equals(printerName)) {
+                    printerJob = null;
+                }
             } else {
                 throw new PrintCanceledException("User cancelled print request");
             }
