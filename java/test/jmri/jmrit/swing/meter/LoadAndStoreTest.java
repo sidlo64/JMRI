@@ -12,6 +12,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import jmri.InstanceManager;
+import jmri.JmriException;
 import jmri.jmrix.roco.z21.RocoZ21CommandStation;
 import jmri.jmrix.roco.z21.Z21InterfaceScaffold;
 import jmri.jmrix.roco.z21.Z21PredefinedMeters;
@@ -44,7 +45,7 @@ public class LoadAndStoreTest extends jmri.configurexml.LoadAndStoreTestBase {
 
     @ParameterizedTest(name = "{index}: {0} (pass={1})")
     @MethodSource("data")
-    public void loadAndStoreTest(File file, boolean pass) throws Exception {
+    public void loadAndStoreTest(File file, boolean pass) throws IOException, JmriException {
         this.loadLoadStoreFileCheck(file);
     }
 

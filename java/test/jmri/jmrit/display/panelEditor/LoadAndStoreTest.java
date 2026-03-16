@@ -124,8 +124,8 @@ public class LoadAndStoreTest extends jmri.configurexml.LoadAndStoreTestBase {
      */
     public static int compareImageFiles(File fileA, File fileB) {
         try {
-            log.info("FileA: " + fileA.toString());
-            log.info("FileB: " + fileB.toString());
+            log.info("FileA: {}",fileA);
+            log.info("FileB: {}",fileB);
 
             // check comparison file exists
             if (!fileA.exists()) {

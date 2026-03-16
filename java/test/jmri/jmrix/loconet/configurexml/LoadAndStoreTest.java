@@ -6,6 +6,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.stream.Stream;
 
+import jmri.JmriException;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.io.TempDir;
@@ -35,7 +37,7 @@ public class LoadAndStoreTest extends jmri.configurexml.LoadAndStoreTestBase {
 
     @ParameterizedTest(name = "{index}: {0} (pass={1})")
     @MethodSource("data")
-    public void loadAndStoreTest(File file, boolean pass) throws Exception {
+    public void loadAndStoreTest(File file, boolean pass) throws IOException, JmriException {
         super.loadLoadStoreFileCheck(file);
     }
 

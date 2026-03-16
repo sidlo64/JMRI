@@ -37,7 +37,7 @@ public class LoadAndStoreTest extends jmri.configurexml.LoadAndStoreTestBase {
 
     @ParameterizedTest(name = "{index}: {0} (pass={1})")
     @MethodSource("data")
-    public void loadAndStoreTest(File file, boolean pass) throws Exception {
+    public void loadAndStoreTest(File file, boolean pass) throws IOException, JmriException {
         this.loadLoadStoreFileCheck(file);
     }
 
@@ -177,8 +177,8 @@ public class LoadAndStoreTest extends jmri.configurexml.LoadAndStoreTestBase {
      */
     public static int compareImageFiles(File fileA, File fileB) {
         try {
-            log.info("FileA: " + fileA.toString());
-            log.info("FileB: " + fileB.toString());
+            log.info("FileA: {}",fileA);
+            log.info("FileB: {}",fileB);
 
             // check comparison file exists
             if (!fileA.exists()) {
