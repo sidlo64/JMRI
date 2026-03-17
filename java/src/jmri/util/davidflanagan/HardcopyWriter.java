@@ -82,7 +82,6 @@ public class HardcopyWriter extends Writer implements Printable {
     protected JButton previousButton;
     protected JButton closeButton;
     protected JLabel pageCount = new JLabel();
-    protected boolean showPreview = true;
 
     protected Column[] columns = {new Column(0, Integer.MAX_VALUE, Align.LEFT_WRAP)};
     protected int columnIndex = 0;
@@ -110,7 +109,8 @@ public class HardcopyWriter extends Writer implements Printable {
     /**
      * Constructor for HardcopyWriter
      * 
-     * @param frame         The AWT Frame (only required for preview mode)
+     * @param frame         The AWT Frame (only required for preview mode) -- this is used
+     *                      to get the screen resolution.
      * @param jobname       The name to print in the title of the page
      * @param fontName      The name of the font to use (if null, default is
      *                      used)
@@ -312,7 +312,7 @@ public class HardcopyWriter extends Writer implements Printable {
 
             previewFrame.setSize((int) (pagesizePixels.width / pixelScale) + 48,
                     (int) (pagesizePixels.height / pixelScale) + 100);
-            previewFrame.setVisible(showPreview);
+            previewFrame.setVisible(true);
         }
     }
 
@@ -407,36 +407,34 @@ public class HardcopyWriter extends Writer implements Printable {
      * Not part of the original HardcopyWriter class.
      */
     protected void displayPage() {
-        if (showPreview) {
-            // limit the pages to the actual range
-            if (pagenum > pageImages.size()) {
-                pagenum = pageImages.size();
-            }
-            if (pagenum < 1) {
-                pagenum = 1;
-            }
-            // enable/disable the previous/next buttons as appropriate
-            previousButton.setEnabled(true);
-            nextButton.setEnabled(true);
-            if (pagenum == pageImages.size()) {
-                nextButton.setEnabled(false);
-            }
-            if (pagenum == 1) {
-                previousButton.setEnabled(false);
-            }
-            previewImage = pageImages.elementAt(pagenum - 1);
-            previewFrame.setVisible(false);
-            // previewIcon.setImage(previewImage);
-            previewLabel.setIcon(new RetinaIcon(previewImage, pixelScale));
-            // put the label in the panel (already has a scroll pane)
-            previewPanel.add(previewLabel);
-            // set the page count info
-            pageCount.setText(Bundle.getMessage("HeaderPageNum", pagenum, pageImages.size()));
-            // repaint the frame but don't use pack() as we don't want resizing
-            previewFrame.invalidate();
-            previewFrame.revalidate();
-            previewFrame.setVisible(true);
+        // limit the pages to the actual range
+        if (pagenum > pageImages.size()) {
+            pagenum = pageImages.size();
         }
+        if (pagenum < 1) {
+            pagenum = 1;
+        }
+        // enable/disable the previous/next buttons as appropriate
+        previousButton.setEnabled(true);
+        nextButton.setEnabled(true);
+        if (pagenum == pageImages.size()) {
+            nextButton.setEnabled(false);
+        }
+        if (pagenum == 1) {
+            previousButton.setEnabled(false);
+        }
+        previewImage = pageImages.elementAt(pagenum - 1);
+        previewFrame.setVisible(false);
+        // previewIcon.setImage(previewImage);
+        previewLabel.setIcon(new RetinaIcon(previewImage, pixelScale));
+        // put the label in the panel (already has a scroll pane)
+        previewPanel.add(previewLabel);
+        // set the page count info
+        pageCount.setText(Bundle.getMessage("HeaderPageNum", pagenum, pageImages.size()));
+        // repaint the frame but don't use pack() as we don't want resizing
+        previewFrame.invalidate();
+        previewFrame.revalidate();
+        previewFrame.setVisible(true);
     }
 
     /**
@@ -1014,19 +1012,17 @@ public class HardcopyWriter extends Writer implements Printable {
         page = getGraphics();
 
         if (isPreview) {
-            if (showPreview) {
-                previewImage = previewPanel.createImage(pagesizePixels.width, pagesizePixels.height);
-                page = previewImage.getGraphics();
+            previewImage = previewPanel.createImage(pagesizePixels.width, pagesizePixels.height);
+            page = previewImage.getGraphics();
 
-                if (page instanceof Graphics2D) {
-                    setupGraphics(page, true);
-                }
-
-                page.setColor(Color.white);
-                page.fillRect(0, 0, (int) (pagesizePixels.width * 72.0 / getScreenResolution()),
-                        (int) (pagesizePixels.height * 72.0 / getScreenResolution()));
-                page.setColor(color);
+            if (page instanceof Graphics2D) {
+                setupGraphics(page, true);
             }
+
+            page.setColor(Color.white);
+            page.fillRect(0, 0, (int) (pagesizePixels.width * 72.0 / getScreenResolution()),
+                    (int) (pagesizePixels.height * 72.0 / getScreenResolution()));
+            page.setColor(color);
         } else {
             // We only need this is non-preview mode. 
             pageCommands.add(currentPageCommands);
