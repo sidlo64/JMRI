@@ -290,7 +290,7 @@ public class HardcopyWriter extends Writer implements Printable {
         // get body font and font size
         font = new Font(useFontName, useFontStyle, useFontSize);
         g.setFont(font);
-        refreshMetrics(g);
+        refreshMetrics();
 
         // header font info
         headerfont = new Font("SansSerif", Font.ITALIC, useFontSize);
@@ -827,36 +827,20 @@ public class HardcopyWriter extends Writer implements Printable {
             // if a page is pending, set the new font, else newpage() will
             if (currentPageCommands != null) {
                 record(new SetFont(font));
-                refreshMetrics(page);
+                refreshMetrics();
             }
         }
     }
 
     /**
      * Refresh the font metrics after changing things like font, size, etc.
-     * 
-     * @param g the graphics context
      */
-    private void refreshMetrics(Graphics g) {
-        if (g == null) {
-            g = getGraphics();
-        }
-
-        FontMetrics metrics = g.getFontMetrics(font);
-        lineheight = metrics.getHeight();
-        lineascent = metrics.getAscent();
-
-        if (g instanceof Graphics2D) {
-            Rectangle2D bounds = font.getStringBounds("m".repeat(100), neutralFRC);
-            charwidth = (float) (bounds.getWidth() / 100.0);
-            LineMetrics lm = font.getLineMetrics("Your text here", neutralFRC);
-            lineheight = lm.getHeight();
-            lineascent = lm.getAscent();
-        } else {
-            log.info("refreshMetrics on {} using metrics", g.getClass().getName());
-            Rectangle2D bounds = metrics.getStringBounds("m".repeat(100), g);
-            charwidth = (float) (bounds.getWidth() / 100.0);
-        }
+    private void refreshMetrics() {
+        Rectangle2D bounds = font.getStringBounds("m".repeat(100), neutralFRC);
+        charwidth = (float) (bounds.getWidth() / 100.0);
+        LineMetrics lm = font.getLineMetrics("Your text here", neutralFRC);
+        lineheight = lm.getHeight();
+        lineascent = lm.getAscent();
 
         // compute lines and columns within margins
         double widthI = font.getStringBounds("i", neutralFRC).getWidth();
@@ -1052,7 +1036,7 @@ public class HardcopyWriter extends Writer implements Printable {
         }
         // set basic font
         record(new SetFont(font));
-        refreshMetrics(page);
+        refreshMetrics();
     }
 
     /**
