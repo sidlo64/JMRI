@@ -856,8 +856,8 @@ public class HardcopyWriter extends Writer implements Printable {
      * 
      * @return the height of a line of text
      */
-    public int getLineHeight() {
-        return (int) this.lineheight;
+    public float getLineHeight() {
+        return this.lineheight;
     }
 
     /**
@@ -888,8 +888,8 @@ public class HardcopyWriter extends Writer implements Printable {
      * 
      * @return the ascent of the font
      */
-    public int getLineAscent() {
-        return (int) this.lineascent;
+    public float getLineAscent() {
+        return this.lineascent;
     }
 
     /**
@@ -954,7 +954,7 @@ public class HardcopyWriter extends Writer implements Printable {
      * 
      * @param points The amount of vertical space to leave in points.
      */
-    public void leaveVerticalSpace(int points) {
+    public void leaveVerticalSpace(float points) {
         v_pos += points;
         ensureVerticalSpace(0);
     }
@@ -1278,9 +1278,9 @@ public class HardcopyWriter extends Writer implements Printable {
      * @param vEnd   vertical ending position
      * @param hEnd   horizontal ending position
      */
-    public void writeLine(int vStart, int hStart, int vEnd, int hEnd) {
-        writeExactLine((int) (vStart + (lineheight - lineascent) / 2), hStart - useFontSize / 4,
-                (int) (vEnd + (lineheight - lineascent) / 2), hEnd - useFontSize / 4);
+    public void writeLine(float vStart, float hStart, float vEnd, float hEnd) {
+        writeExactLine((vStart + (lineheight - lineascent) / 2), hStart - useFontSize / 4,
+                (vEnd + (lineheight - lineascent) / 2), hEnd - useFontSize / 4);
     }
 
     /**
@@ -1298,14 +1298,14 @@ public class HardcopyWriter extends Writer implements Printable {
      * @param vEnd   vertical ending position
      * @param hEnd   horizontal ending position
      */
-    public void writeExactLine(int vStart, int hStart, int vEnd, int hEnd) {
+    public void writeExactLine(float vStart, float hStart, float vEnd, float hEnd) {
         // if we haven't begun a new page, do that now
         ensureOnPage();
 
-        int xStart = x0 + hStart;
-        int xEnd = x0 + hEnd;
-        int yStart = y0 + vStart;
-        int yEnd = y0 + vEnd;
+        int xStart = (int) (x0 + hStart);
+        int xEnd = (int) (x0 + hEnd);
+        int yStart = (int) (y0 + vStart);
+        int yEnd = (int) (y0 + vEnd);
         record(new DrawLine(xStart, yStart, xEnd, yEnd));
 
         // We want to make sure that the lines are within the printable area
@@ -1320,8 +1320,8 @@ public class HardcopyWriter extends Writer implements Printable {
      * @return the current vertical position of the base of the current line on
      *         the page (in points)
      */
-    public int getCurrentVPos() {
-        return (int) v_pos;
+    public float getCurrentVPos() {
+        return v_pos;
     }
 
     /**
