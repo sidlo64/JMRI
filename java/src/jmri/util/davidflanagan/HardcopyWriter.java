@@ -3,6 +3,7 @@ package jmri.util.davidflanagan;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.font.FontRenderContext;
+import java.awt.font.LineMetrics;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
@@ -53,7 +54,7 @@ public class HardcopyWriter extends Writer implements Printable {
     protected String useFontName = "Monospaced";
     protected boolean isMonospacedFont = true;
     protected int useFontStyle = Font.PLAIN;
-    protected FontMetrics metrics;
+    protected FontRenderContext neutralFRC;
     protected FontMetrics headermetrics;
     protected int x0, y0;
     protected int height, width;
@@ -62,10 +63,10 @@ public class HardcopyWriter extends Writer implements Printable {
     protected double titleTop; // Points down from top of page
     protected double leftMargin;
     protected float charwidth;
-    protected int lineheight;
-    protected int lineascent;
-    protected int v_pos = 0; // The offset of the current line from the top margin.
-    protected int max_v_pos = 0; // The maximum offset of the current line from the top margin.
+    protected float lineheight;
+    protected float lineascent;
+    protected float v_pos = 0; // The offset of the current line from the top margin.
+    protected float max_v_pos = 0; // The maximum offset of the current line from the top margin.
     protected int pagenum = 0;
     protected Color color = Color.black;
     protected boolean printHeader = true;
@@ -160,6 +161,12 @@ public class HardcopyWriter extends Writer implements Printable {
             Boolean isPrintHeader, Attribute sides, Dimension pagesize)
             throws HardcopyWriter.PrintCanceledException {
 
+        neutralFRC = new FontRenderContext(
+                new AffineTransform(), // No scaling/rotation
+                true, // Anti-aliasing
+                true // Fractional metrics
+        );
+
         if (isPreview) {
             GraphicsConfiguration gc = frame.getGraphicsConfiguration();
             AffineTransform at = gc.getDefaultTransform();
@@ -176,7 +183,7 @@ public class HardcopyWriter extends Writer implements Printable {
         // Get the screen resolution and cache it. This also allows us to override
         // the default resolution for testing purposes.
         if (frame == null) {
-            screenResolution = 1;
+            screenResolution = 100;
         } else {
             getScreenResolution();
         }
@@ -446,8 +453,7 @@ public class HardcopyWriter extends Writer implements Printable {
      */
 
     public Rectangle2D measure(String s) {
-        Graphics g = getGraphics();
-        Rectangle2D bounds = metrics.getStringBounds(s, g);
+        Rectangle2D bounds = font.getStringBounds(s, neutralFRC);
         return bounds;
     }
 
@@ -646,7 +652,7 @@ public class HardcopyWriter extends Writer implements Printable {
     private void flush_column() {
         Column column = columns[columnIndex];
 
-        Rectangle2D bounds = metrics.getStringBounds(line, page);
+        Rectangle2D bounds = font.getStringBounds(line, neutralFRC);
 
         int stringStartPos = column.getStartPos(bounds.getWidth());
         int columnWidth = Math.min(column.getWidth(), width - stringStartPos);
@@ -662,7 +668,7 @@ public class HardcopyWriter extends Writer implements Printable {
             int high = line.length();
             while (low < high) {
                 int mid = (low + high) / 2;
-                if (metrics.getStringBounds(line.substring(0, mid), page).getWidth() < columnWidth) {
+                if (font.getStringBounds(line.substring(0, mid), neutralFRC).getWidth() < columnWidth) {
                     // We know that the first mid characters will fit in the column.
                     low = mid + 1;
                 } else {
@@ -689,7 +695,7 @@ public class HardcopyWriter extends Writer implements Printable {
             }
             // Now we can split the string and wrap it to the next line.
             String firstLine = line.substring(0, splitPos);
-            stringStartPos = column.getStartPos(metrics.getStringBounds(firstLine, page).getWidth());
+            stringStartPos = column.getStartPos(font.getStringBounds(firstLine, neutralFRC).getWidth());
 
             // We can now output the first line.
             record(new DrawString(firstLine, x0 + stringStartPos, y0 + v_pos + lineascent));
@@ -836,15 +842,16 @@ public class HardcopyWriter extends Writer implements Printable {
             g = getGraphics();
         }
 
-        metrics = g.getFontMetrics(font);
+        FontMetrics metrics = g.getFontMetrics(font);
         lineheight = metrics.getHeight();
         lineascent = metrics.getAscent();
 
         if (g instanceof Graphics2D) {
-            Graphics2D g2d = (Graphics2D) g;
-            FontRenderContext frc = g2d.getFontRenderContext();
-            Rectangle2D bounds = font.getStringBounds("m".repeat(100), frc);
+            Rectangle2D bounds = font.getStringBounds("m".repeat(100), neutralFRC);
             charwidth = (float) (bounds.getWidth() / 100.0);
+            LineMetrics lm = font.getLineMetrics("Your text here", neutralFRC);
+            lineheight = lm.getHeight();
+            lineascent = lm.getAscent();
         } else {
             log.info("refreshMetrics on {} using metrics", g.getClass().getName());
             Rectangle2D bounds = metrics.getStringBounds("m".repeat(100), g);
@@ -852,13 +859,11 @@ public class HardcopyWriter extends Writer implements Printable {
         }
 
         // compute lines and columns within margins
-        int widthI = metrics.charWidth('i');
-        int widthW = metrics.charWidth('W');
-        int widthM = metrics.charWidth('M');
-        int widthDot = metrics.charWidth('.');
-
-        // If the width of 'i' matches 'W', it's almost certainly monospaced
-        isMonospacedFont = (widthI == widthW && widthW == widthM && widthM == widthDot);
+        double widthI = font.getStringBounds("i", neutralFRC).getWidth();
+        double widthM = font.getStringBounds("m", neutralFRC).getWidth();
+        
+        // Using a tiny epsilon check for double precision stability
+        isMonospacedFont = Math.abs(widthI - widthM) < 0.0001;
     }
 
     /**
@@ -868,7 +873,7 @@ public class HardcopyWriter extends Writer implements Printable {
      * @return the height of a line of text
      */
     public int getLineHeight() {
-        return this.lineheight;
+        return (int) this.lineheight;
     }
 
     /**
@@ -900,7 +905,7 @@ public class HardcopyWriter extends Writer implements Printable {
      * @return the ascent of the font
      */
     public int getLineAscent() {
-        return this.lineascent;
+        return (int) this.lineascent;
     }
 
     /**
@@ -1183,7 +1188,7 @@ public class HardcopyWriter extends Writer implements Printable {
         Dimension d = new Dimension(Math.round(icon.getIconWidth() * scale), Math.round(icon.getIconHeight() * scale));
 
         int x = x0 + width - d.width;
-        int y = y0 + v_pos + lineascent;
+        int y = (int) (y0 + v_pos + lineascent);
 
         if (isPreview) {
             float pixelsPerPoint = getScreenResolution() / 72.0f;
@@ -1233,7 +1238,7 @@ public class HardcopyWriter extends Writer implements Printable {
         }
 
         int x = x0 + width - d.width;
-        int y = y0 + v_pos + lineascent;
+        int y = (int) (y0 + v_pos + lineascent);
 
         record(new DrawImage(c, x, y, d.width, d.height));
         return d;
@@ -1261,7 +1266,7 @@ public class HardcopyWriter extends Writer implements Printable {
         ensureOnPage();
 
         int x = x0;
-        int y = y0 + v_pos;
+        int y = (int) (y0 + v_pos);
         record(new PrintWindow(jW, x, y));
     }
 
@@ -1290,8 +1295,8 @@ public class HardcopyWriter extends Writer implements Printable {
      * @param hEnd   horizontal ending position
      */
     public void writeLine(int vStart, int hStart, int vEnd, int hEnd) {
-        writeExactLine(vStart + (lineheight - lineascent) / 2, hStart - useFontSize / 4,
-                vEnd + (lineheight - lineascent) / 2, hEnd - useFontSize / 4);
+        writeExactLine((int) (vStart + (lineheight - lineascent) / 2), hStart - useFontSize / 4,
+                (int) (vEnd + (lineheight - lineascent) / 2), hEnd - useFontSize / 4);
     }
 
     /**
@@ -1332,7 +1337,7 @@ public class HardcopyWriter extends Writer implements Printable {
      *         the page (in points)
      */
     public int getCurrentVPos() {
-        return v_pos;
+        return (int) v_pos;
     }
 
     /**
@@ -1344,8 +1349,8 @@ public class HardcopyWriter extends Writer implements Printable {
      * Miller.
      */
     public void writeBorders() {
-        writeLine(v_pos, 0, v_pos + lineheight, 0);
-        writeLine(v_pos, width, v_pos + lineheight, width);
+        writeLine((int) v_pos, 0, (int) (v_pos + lineheight), 0);
+        writeLine((int) v_pos, width, (int) (v_pos + lineheight), width);
     }
 
     /**
@@ -1361,7 +1366,7 @@ public class HardcopyWriter extends Writer implements Printable {
      * @param percent percentage by which to increase line spacing
      */
     public void increaseLineSpacing(int percent) {
-        int delta = (lineheight * percent) / 100;
+        float delta = (lineheight * percent) / 100;
         lineheight = lineheight + delta;
         lineascent = lineascent + delta;
     }
@@ -1639,15 +1644,26 @@ public class HardcopyWriter extends Writer implements Printable {
         return PAGE_EXISTS;
     }
 
+    @Override
+    public String toString() {
+        return "HardcopyWriter(" +
+            ", page=" + page +
+            ", lineheight=" + lineheight +
+            ", lineascent=" + lineascent +
+            ", Msize=" + measure("M") +
+            ", pagesizePoints=" + pagesizePoints + 
+            ", pagesizePixels=" + pagesizePixels + ")";
+    }
+
     protected interface PrintCommand {
         void execute(Graphics2D g);
     }
 
     protected static class DrawString implements PrintCommand {
         String s;
-        int x, y;
+        float x, y;
 
-        DrawString(String s, int x, int y) {
+        DrawString(String s, float x, float y) {
             this.s = s;
             this.x = x;
             this.y = y;
