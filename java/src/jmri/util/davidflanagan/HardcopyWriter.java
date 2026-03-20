@@ -1279,8 +1279,8 @@ public class HardcopyWriter extends Writer implements Printable {
      * @param hEnd   horizontal ending position
      */
     public void writeLine(float vStart, float hStart, float vEnd, float hEnd) {
-        writeExactLine((vStart + (lineheight - lineascent) / 2), hStart - useFontSize / 4,
-                (vEnd + (lineheight - lineascent) / 2), hEnd - useFontSize / 4);
+        writeExactLine((vStart + (lineheight - lineascent) / 2), hStart - useFontSize / 4.0f,
+                (vEnd + (lineheight - lineascent) / 2), hEnd - useFontSize / 4.0f);
     }
 
     /**

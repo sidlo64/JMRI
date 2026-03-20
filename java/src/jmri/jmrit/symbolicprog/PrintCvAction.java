@@ -71,7 +71,7 @@ public class PrintCvAction extends AbstractAction {
             int tableRight = TABLE_COLS * 24 + 1;   // ISSUE: this is wrong
             float tableTopPos;
             int tableBottomPos;
-            float tableHeightPoints = (cvCount / TABLE_COLS) * writer.getLineHeight();  
+            float tableHeightPoints = (float) Math.ceil(cvCount / (double) TABLE_COLS) * writer.getLineHeight();  
             if (cvCount % TABLE_COLS > 0) {
                 tableHeightPoints += writer.getLineHeight();
             }

@@ -18,6 +18,7 @@ import jmri.util.JUnitUtil;
 import jmri.util.davidflanagan.HardcopyWriter.PrintCanceledException;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public class HardcopyWriterTest {
@@ -207,7 +208,7 @@ public class HardcopyWriterTest {
                     new Rectangle(0, 0, 850, 50),
                     new Rectangle(50, 50, 250, 70),
                     new Rectangle(300, 98, 250, 70),
-                    new Rectangle(570, 148, 230, 110),
+                    new Rectangle(572, 148, 230, 110),
                     new Rectangle(50, 195, 500, 80)
             };
 
@@ -490,6 +491,8 @@ public class HardcopyWriterTest {
             }
             g2d.dispose();
             ImageIO.write(copy, "png", file);
+        } catch (FileNotFoundException e) {
+            // /tmp is not writable
         } catch (IOException e) {
             e.printStackTrace();
         }
