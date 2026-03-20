@@ -208,7 +208,7 @@ public class HardcopyWriterTest {
                     new Rectangle(0, 0, 850, 50),
                     new Rectangle(50, 50, 250, 70),
                     new Rectangle(300, 98, 250, 70),
-                    new Rectangle(572, 148, 230, 110),
+                    new Rectangle(570, 148, 230, 110),
                     new Rectangle(50, 195, 500, 80)
             };
 

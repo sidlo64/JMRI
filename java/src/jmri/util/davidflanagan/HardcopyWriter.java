@@ -55,6 +55,7 @@ public class HardcopyWriter extends Writer implements Printable {
     protected boolean isMonospacedFont = true;
     protected int useFontStyle = Font.PLAIN;
     protected FontRenderContext neutralFRC;
+    protected FontRenderContext actualFRC;
     protected FontMetrics headermetrics;
     protected int x0, y0;
     protected int height, width;
@@ -274,6 +275,12 @@ public class HardcopyWriter extends Writer implements Printable {
 
         // Create a graphics context that we can use to get font metrics
         Graphics g = getGraphics();
+
+        if (g instanceof Graphics2D) {
+            actualFRC = ((Graphics2D) g).getFontRenderContext();
+        } else {
+            actualFRC = neutralFRC;
+        }
 
         if (fontsize != null) {
             useFontSize = fontsize;
@@ -695,7 +702,7 @@ public class HardcopyWriter extends Writer implements Printable {
             }
             // Now we can split the string and wrap it to the next line.
             String firstLine = line.substring(0, splitPos);
-            stringStartPos = column.getStartPos(font.getStringBounds(firstLine, neutralFRC).getWidth());
+            stringStartPos = column.getStartPos(font.getStringBounds(firstLine, actualFRC).getWidth());
 
             // We can now output the first line.
             record(new DrawString(firstLine, x0 + stringStartPos, y0 + v_pos + lineascent));
