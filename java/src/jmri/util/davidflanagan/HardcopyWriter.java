@@ -1062,7 +1062,8 @@ public class HardcopyWriter extends Writer implements Printable {
      * Setup the graphics context for preview. We want the subpixel positioning
      * for text. 
      * 
-     * @param g the graphics context to setup
+     * @param g2d the graphics context to setup
+     * @param applyScale whether to apply the scale factor
      */
     private void setupGraphics(Graphics2D g2d, boolean applyScale) {
         if (applyScale) {
