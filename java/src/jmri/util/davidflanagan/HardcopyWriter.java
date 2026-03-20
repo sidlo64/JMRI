@@ -42,8 +42,8 @@ public class HardcopyWriter extends Writer implements Printable {
     // instance variables
     protected PrinterJob printerJob;
     protected PageFormat pageFormat;
-    protected Graphics printJobGraphics;
-    protected Graphics page;
+    protected Graphics2D printJobGraphics;
+    protected Graphics2D page;
     protected String jobname;
     protected String line = "";
     protected int useFontSize = 7;
@@ -73,8 +73,8 @@ public class HardcopyWriter extends Writer implements Printable {
     protected boolean printHeader = true;
 
     protected boolean isPreview;
-    protected Image previewImage;
-    protected Vector<Image> pageImages = new Vector<>(3, 3);
+    protected BufferedImage previewImage;
+    protected Vector<BufferedImage> pageImages = new Vector<>(3, 3);
     protected JmriJFrame previewFrame;
     protected JPanel previewPanel;
     protected ImageIcon previewIcon = new ImageIcon();
@@ -274,13 +274,9 @@ public class HardcopyWriter extends Writer implements Printable {
         height = pagesizePoints.height - (int) (topmargin + bottommargin);
 
         // Create a graphics context that we can use to get font metrics
-        Graphics g = getGraphics();
+        Graphics2D g = getGraphics();
 
-        if (g instanceof Graphics2D) {
-            actualFRC = ((Graphics2D) g).getFontRenderContext();
-        } else {
-            actualFRC = neutralFRC;
-        }
+        actualFRC = g.getFontRenderContext();
 
         if (fontsize != null) {
             useFontSize = fontsize;
@@ -337,15 +333,15 @@ public class HardcopyWriter extends Writer implements Printable {
      * 
      * @return the graphics context
      */
-    private Graphics getGraphics() {
-        Graphics g = page;
+    private Graphics2D getGraphics() {
+        Graphics2D g = page;
 
         if (g != null) {
             return g;
         }
 
-        Image img = new BufferedImage(pagesizePixels.width, pagesizePixels.height, BufferedImage.TYPE_INT_RGB);
-        g = img.getGraphics();
+        BufferedImage img = new BufferedImage(pagesizePixels.width, pagesizePixels.height, BufferedImage.TYPE_INT_RGB);
+        g = img.createGraphics();
         if (g == null) {
             throw new RuntimeException("Could not get graphics context");
         }
@@ -355,9 +351,7 @@ public class HardcopyWriter extends Writer implements Printable {
 
     private void record(PrintCommand cmd) {
         currentPageCommands.add(cmd);
-        if (page instanceof Graphics2D) {
-            cmd.execute((Graphics2D) page);
-        }
+        cmd.execute(page);
     }
 
     /**
@@ -1008,12 +1002,10 @@ public class HardcopyWriter extends Writer implements Printable {
         page = getGraphics();
 
         if (isPreview) {
-            previewImage = previewPanel.createImage(pagesizePixels.width, pagesizePixels.height);
-            page = previewImage.getGraphics();
+            previewImage = new BufferedImage(pagesizePixels.width, pagesizePixels.height, BufferedImage.TYPE_INT_RGB);
+            page = previewImage.createGraphics();
 
-            if (page instanceof Graphics2D) {
-                setupGraphics(page, true);
-            }
+            setupGraphics(page, true);
 
             page.setColor(Color.white);
             page.fillRect(0, 0, (int) (pagesizePixels.width * 72.0 / getScreenResolution()),
@@ -1051,7 +1043,7 @@ public class HardcopyWriter extends Writer implements Printable {
      * 
      * @return the current page as a BufferedImage
      */
-    public Vector<Image> getPageImages() {
+    public Vector<BufferedImage> getPageImages() {
         return pageImages;
     }
 
@@ -1068,41 +1060,35 @@ public class HardcopyWriter extends Writer implements Printable {
 
     /**
      * Setup the graphics context for preview. We want the subpixel positioning
-     * for text. This is not used for the actual printing (partly because the
-     * Print graphics context is not necessarily a Graphics2D object).
+     * for text. 
      * 
      * @param g the graphics context to setup
      */
-    private void setupGraphics(Graphics g, boolean applyScale) {
-        if (g instanceof Graphics2D) {
-            Graphics2D g2d = (Graphics2D) g;
-            if (applyScale) {
-                double scale = getScreenResolution() / 72.0;
-                g2d.scale(scale, scale);
-            }
-
-            // Enable Antialiasing (Smooths the edges)
-            g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
-                    RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-
-            // Enable Fractional Metrics (Improves character spacing)
-            g2d.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS,
-                    RenderingHints.VALUE_FRACTIONALMETRICS_ON);
-
-            // High Quality Rendering
-            g2d.setRenderingHint(RenderingHints.KEY_RENDERING,
-                    RenderingHints.VALUE_RENDER_QUALITY);
-
-            // Set Interpolation for the Image (The most important for images)
-            g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
-                    RenderingHints.VALUE_INTERPOLATION_BICUBIC);
-
-            // Enable Antialiasing (Smooths the edges)
-            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-                    RenderingHints.VALUE_ANTIALIAS_ON);
-        } else {
-            log.info("Not setting rendering hints for {}", g.getClass().getName());
+    private void setupGraphics(Graphics2D g2d, boolean applyScale) {
+        if (applyScale) {
+            double scale = getScreenResolution() / 72.0;
+            g2d.scale(scale, scale);
         }
+
+        // Enable Antialiasing (Smooths the edges)
+        g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+                RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+
+        // Enable Fractional Metrics (Improves character spacing)
+        g2d.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS,
+                RenderingHints.VALUE_FRACTIONALMETRICS_ON);
+
+        // High Quality Rendering
+        g2d.setRenderingHint(RenderingHints.KEY_RENDERING,
+                RenderingHints.VALUE_RENDER_QUALITY);
+
+        // Set Interpolation for the Image (The most important for images)
+        g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+                RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+
+        // Enable Antialiasing (Smooths the edges)
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                RenderingHints.VALUE_ANTIALIAS_ON);
     }
 
     /**

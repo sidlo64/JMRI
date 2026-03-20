@@ -77,7 +77,7 @@ public class HardcopyWriterTest {
             // This is what causes the page to get added to the vector of images.
             hcw.pageBreak();
 
-            Vector<Image> images = hcw.getPageImages();
+            Vector<BufferedImage> images = hcw.getPageImages();
             Assertions.assertNotNull(images, "getImages");
             Assertions.assertEquals(1, images.size(), "getImages");
             Image image = images.get(0);
@@ -130,7 +130,7 @@ public class HardcopyWriterTest {
             pageNumber = hcw.getPageNum();
             Assertions.assertEquals(2, pageNumber, "page number");
 
-            Vector<Image> images = hcw.getPageImages();
+            Vector<BufferedImage> images = hcw.getPageImages();
             Assertions.assertNotNull(images, "getImages");
             Assertions.assertEquals(1, images.size(), "getImages");
         } catch (HardcopyWriter.PrintCanceledException pce) {
@@ -198,7 +198,7 @@ public class HardcopyWriterTest {
 
             hcw.pageBreak();
 
-            Vector<Image> images = hcw.getPageImages();
+            Vector<BufferedImage> images = hcw.getPageImages();
             Assertions.assertEquals(1, images.size(), "getImages");
             Image image = images.get(0);
 
@@ -365,8 +365,8 @@ public class HardcopyWriterTest {
             performStandardDrawing(hcwPreview, width);
             hcwPreview.pageBreak();
 
-            Vector<Image> previewImages = hcwPreview.getPageImages();
-            BufferedImage previewImg = (BufferedImage) previewImages.get(0);
+            Vector<BufferedImage> previewImages = hcwPreview.getPageImages();
+            BufferedImage previewImg = previewImages.get(0);
 
             // 2. Print mode (bypass dialog)
             hcwPrint = new HardcopyWriter(frame, "test-compare", null, null, 10, .5 * 72, .5 * 72, .5 * 72, .5 * 72,
