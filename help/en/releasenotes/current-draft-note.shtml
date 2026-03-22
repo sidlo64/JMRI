@@ -472,7 +472,8 @@
     <h3>Layout Editor</h3>
         <a id="LE" name="LE"></a>
         <ul>
-            <li></li>
+            <li>Added a "Tables Settings" item to the Tables menu to allow the adding of the Tools menu to the Main Menu
+              .</li>
         </ul>
 
         <h4>NX - Entry/Exit Tool</h4>
