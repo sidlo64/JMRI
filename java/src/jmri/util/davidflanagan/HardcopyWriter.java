@@ -1176,7 +1176,7 @@ public class HardcopyWriter extends Writer implements Printable {
         int y = (int) (y0 + v_pos + lineascent);
 
         if (isPreview) {
-            float pixelsPerPoint = getScreenResolution() / DPI;
+            float pixelsPerPoint = getScreenResolution() / (float) DPI;
             Image c = ImageUtils.getScaledInstance(icon.getImage(), (int) (requiredSize.width * pixelsPerPoint),
                     (int) (requiredSize.height * pixelsPerPoint));
 
@@ -1216,7 +1216,7 @@ public class HardcopyWriter extends Writer implements Printable {
         Dimension d = new Dimension(Math.round(c.getWidth(null) * scale), Math.round(c.getHeight(null) * scale));
 
         if (isPreview) {
-            float pixelsPerPoint = getScreenResolution() / DPI;
+            float pixelsPerPoint = getScreenResolution() / (float) DPI;
             c = ImageUtils.getScaledInstance(c, (int) (requiredSize.width * pixelsPerPoint),
                     (int) (requiredSize.height * pixelsPerPoint));
             d = new Dimension((int) (c.getWidth(null) / pixelsPerPoint), (int) (c.getHeight(null) / pixelsPerPoint));
