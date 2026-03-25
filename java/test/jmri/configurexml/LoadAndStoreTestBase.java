@@ -9,6 +9,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 import java.text.ParseException;
 import java.util.stream.Stream;
 
@@ -112,7 +115,7 @@ public class LoadAndStoreTestBase {
         return SchemaTestBase.getDirectories(new File(directory, "load"), recurse, pass);
     }
 
-    public static void checkFile(File inFile1, File inFile2) throws IOException {
+    public static void checkFile(File inFile1, File inFile2) throws IOException, ParseException {
 
         try ( // compare files, except for certain special lines
             BufferedReader fileStream1 = new BufferedReader( new InputStreamReader(new FileInputStream(inFile1)));
@@ -353,7 +356,7 @@ public class LoadAndStoreTestBase {
         return outFile;
     }
 
-    public void loadLoadStoreFileCheck(File file) throws IOException, JmriException {
+    public void loadLoadStoreFileCheck(File file) throws IOException, JmriException, ParseException {
         if (guiOnly) {
             Assumptions.assumeFalse(GraphicsEnvironment.isHeadless(), "GUI Only test");
         }

@@ -5,6 +5,7 @@ import jmri.configurexml.LoadAndStoreTestBase;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.stream.Stream;
 
@@ -40,7 +41,7 @@ public class LoadAndStoreTest extends LoadAndStoreTestBase {
 
     @ParameterizedTest(name = "{index}: {0} (pass={1})")
     @MethodSource("data")
-    public void loadAndStoreTest(File file, boolean pass) throws IOException, JmriException {
+    public void loadAndStoreTest(File file, boolean pass) throws IOException, JmriException, ParseException {
         super.loadLoadStoreFileCheck(file);
         // IH1 already suppressed in super test
         JUnitAppender.suppressErrorMessage("systemName is already registered: IH2");

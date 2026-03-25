@@ -3,6 +3,7 @@ package jmri.configurexml;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.stream.Stream;
 
 import jmri.JmriException;
@@ -33,7 +34,7 @@ public class LoadAndStoreTest extends LoadAndStoreTestBase {
 
     @ParameterizedTest(name = "{index}: {0} (pass={1})")
     @MethodSource("data")
-    public void loadAndStoreTest(File file) throws IOException, JmriException {
+    public void loadAndStoreTest(File file) throws IOException, JmriException, ParseException {
         super.loadLoadStoreFileCheck(file);
     }
 
