@@ -450,6 +450,12 @@
                 This can be used to e.g. only allow certain people at a club
                 to mark a locomotive entry as having been inspected.</li>
         </ul>
+    <h3>PanelPro</h3>
+        <a id="PanelPro" name="PanelPro"></a>
+        <ul>
+          <li>Added a "Tables Settings" item to the Tables menu to allow the adding of the Tools menu to the Main
+            Menu.</li>
+        </ul>
 
    <h3>Dispatcher</h3>
         <a id="Dispatcher" name="Dispatcher"></a>
@@ -472,8 +478,7 @@
     <h3>Layout Editor</h3>
         <a id="LE" name="LE"></a>
         <ul>
-            <li>Added a "Tables Settings" item to the Tables menu to allow the adding of the Tools menu to the Main Menu
-              .</li>
+            <li></li>
         </ul>
 
         <h4>NX - Entry/Exit Tool</h4>
