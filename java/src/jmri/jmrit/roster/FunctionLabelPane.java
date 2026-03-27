@@ -3,7 +3,6 @@ package jmri.jmrit.roster;
 import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.*;

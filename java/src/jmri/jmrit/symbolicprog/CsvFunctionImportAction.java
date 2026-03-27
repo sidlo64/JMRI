@@ -3,16 +3,12 @@ package jmri.jmrit.symbolicprog;
 import java.awt.event.ActionEvent;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 
 import javax.swing.AbstractAction;
 import javax.swing.JFileChooser;
 
 import jmri.jmrit.symbolicprog.tabbedframe.PaneProgFrame;
-
-import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVPrinter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
