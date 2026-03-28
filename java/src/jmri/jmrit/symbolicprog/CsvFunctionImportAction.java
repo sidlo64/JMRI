@@ -44,19 +44,36 @@ public class CsvFunctionImportAction extends AbstractAction {
                 log.debug("start to export to CSV file {}", file);
             }
 
+            String status = null;
+            
             try {
                 var csvFormat = org.apache.commons.csv.CSVFormat.Builder.create(org.apache.commons.csv.CSVFormat.DEFAULT).setHeader().build();
                 var csvFile = org.apache.commons.csv.CSVParser.parse(file, java.nio.charset.StandardCharsets.UTF_8, csvFormat);
                 for (var record : csvFile.getRecords()) {
-        
-                    var number = Integer.parseInt(record.get("Number"));
-                    var label = record.get("Label");
-        
-                    parent.getFnLabelPane().setLabel(number, label);
+                    try {
+                        var number = Integer.parseInt(record.get("Number"));
+                        
+                        try {
+                            var label = record.get("Label");
+                            parent.getFnLabelPane().setLabel(number, label);
+                        } catch (ArrayIndexOutOfBoundsException el) {
+                            log.warn("Function {} not present in decoder definition", number);
+                            status = "Function "+number+" not present in decoder definition";
+                            break;
+                        } 
+                    } catch (NumberFormatException en) {
+                        log.warn("Could not parse something in the Number column");
+                        status = "Could not parse something in the Number column";
+                        continue;
+                    }
                 }
             } catch (IOException ex) {
                 log.error("Error reading file", ex);
+                status = "Error reading file";
             }
+            if (status == null) return;
+            
+            jmri.util.swing.JmriJOptionPane.showMessageDialog(null, status);
         }
     }
 
