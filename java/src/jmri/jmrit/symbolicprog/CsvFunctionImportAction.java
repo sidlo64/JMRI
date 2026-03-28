@@ -36,7 +36,7 @@ public class CsvFunctionImportAction extends AbstractAction {
             fileChooser = new jmri.util.swing.JmriJFileChooser();
         }
 
-        int retVal = fileChooser.showSaveDialog(parent);
+        int retVal = fileChooser.showOpenDialog(parent);
 
         if (retVal == JFileChooser.APPROVE_OPTION) {
             File file = fileChooser.getSelectedFile();
@@ -58,18 +58,18 @@ public class CsvFunctionImportAction extends AbstractAction {
                             parent.getFnLabelPane().setLabel(number, label);
                         } catch (ArrayIndexOutOfBoundsException el) {
                             log.warn("Function {} not present in decoder definition", number);
-                            status = "Function "+number+" not present in decoder definition";
+                            status = Bundle.getMessage("MenuImportNoFunctionError", number);
                             break;
                         } 
                     } catch (NumberFormatException en) {
                         log.warn("Could not parse something in the Number column");
-                        status = "Could not parse something in the Number column";
+                        status = Bundle.getMessage("MenuImportNotParseError");
                         continue;
                     }
                 }
             } catch (IOException ex) {
                 log.error("Error reading file", ex);
-                status = "Error reading file";
+                status = Bundle.getMessage("MenuImportError", file);
             }
             if (status == null) return;
             
