@@ -154,7 +154,7 @@ public class ProgrammerConfigManager extends AbstractPreferencesManager {
     }
 
     /**
-     * @param showEmptyPanes the showEmptyPanes to set
+     * @param dontDetachPanes the dontDetachPanes to set
      */
     public void setDontDetachPanes(boolean dontDetachPanes) {
         boolean oldDontDetachPanes = this.dontDetachPanes;
