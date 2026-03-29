@@ -429,6 +429,9 @@
     <h3>DecoderPro</h3>
         <a id="DecoderPro" name="DecoderPro"></a>
         <ul>
+            <li>Added an option in the settings Roster pane, Programmer tab,
+                to drop detachable tabs for the programming panes.
+                </li>
             <li>When you have a roster entry open for editing,
                 there are new entries in the File menu Import 
                 and Export submenus to export
