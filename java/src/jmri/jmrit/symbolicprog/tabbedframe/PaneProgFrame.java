@@ -125,7 +125,7 @@ abstract public class PaneProgFrame extends JmriJFrame
 
         String title = " : "+_frameEntryId;
         
-        if (getDontDetachPanes()) {
+        if (checkDontDetachPanes()) {
             tabPane = new JTabbedPane();
         } else {
             tabPane = new jmri.util.org.mitre.jawb.swing.DetachableTabbedPane(title);
@@ -2291,6 +2291,9 @@ abstract public class PaneProgFrame extends JmriJFrame
             InstanceManager.getDefault(ProgrammerConfigManager.class).setDontDetachPanes(yes);
         }
     }
+    // This method is here to allow override in testing
+    protected boolean checkDontDetachPanes() { return getDontDetachPanes(); }
+    
     
     /**
      * Get value of whether current item should show empty panes.
