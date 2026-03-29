@@ -101,7 +101,8 @@
 
         <h4>MERG</h4>
             <ul>
-                <li></li>
+                <li>Fixed a problem introduced in 5.15.4 where some RFID messages
+                    would be improperly decoded as RailCom reports.</li>
             </ul>
 
         <h4>MQTT</h4>
