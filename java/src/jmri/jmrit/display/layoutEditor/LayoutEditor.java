@@ -7213,7 +7213,7 @@ final public class LayoutEditor extends PanelEditor implements MouseWheelListene
                     Bundle.getMessage("ErrorTitle"), JmriJOptionPane.ERROR_MESSAGE);
             return;
         }
-        TurnoutIcon l = new TurnoutIcon(new NamedIcon("resources/icons/smallschematics/tracksegments/circuit-error.gif",
+        TurnoutIcon l = new OutputIndicator(new NamedIcon("resources/icons/smallschematics/tracksegments/circuit-error.gif",
                 "resources/icons/smallschematics/tracksegments/circuit-error.gif"), this);
 
         l.setTurnout(newName);
@@ -7244,7 +7244,7 @@ final public class LayoutEditor extends PanelEditor implements MouseWheelListene
             log.error("Editor.putItem() with null id has thrown DuplicateIdException", e);
         }
     }
-
+    
     /**
      * Add a signal head to the Panel
      */
@@ -9985,4 +9985,13 @@ final public class LayoutEditor extends PanelEditor implements MouseWheelListene
 
     // initialize logging
     private final static org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(LayoutEditor.class);
+}
+
+// This just exists to change the class name that's being 
+// created for an Output Indicator so that it will show up
+// in the contextual menu.
+class OutputIndicator extends TurnoutIcon {
+    OutputIndicator(NamedIcon ni, Editor editor) {
+        super(ni, editor);
+    }
 }
