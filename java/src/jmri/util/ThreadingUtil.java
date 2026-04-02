@@ -1,11 +1,9 @@
 package jmri.util;
 
-import java.awt.event.ActionEvent;
 import java.lang.reflect.InvocationTargetException;
 import java.util.TimerTask;
 
 import javax.swing.SwingUtilities;
-import javax.swing.Timer;
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.ThreadSafe;
 
