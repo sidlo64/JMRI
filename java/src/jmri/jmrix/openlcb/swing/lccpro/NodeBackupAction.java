@@ -4,6 +4,7 @@ import java.awt.*;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.awt.event.WindowEvent;
 
 import java.io.File;
 import java.io.IOException;
@@ -74,11 +75,11 @@ class NodeBackupAction {
 
         if (_cdi.getRoot() != null) {
             // configuration cache present, store and
-            // cancel window after 2 seconds
+            // cancel window after short delay
             storeCdiData();
             jmri.util.ThreadingUtil.runOnGUIDelayed(() -> {
                 closeStatusWindow();
-                }, 2000); 
+                }, 1000); 
 
         } else {
             // configuration cache present, wait for it
@@ -108,8 +109,7 @@ class NodeBackupAction {
             if (window instanceof JDialog) {
                 JDialog dialog = (JDialog) window;
                 if (Bundle.getMessage("TitleCdiLoad", _name).equals(dialog.getTitle())) {
-                    dialog.dispose();
-                    break;
+                    dialog.dispatchEvent(new WindowEvent(dialog, WindowEvent.WINDOW_CLOSING));
                 }
             }
         }
