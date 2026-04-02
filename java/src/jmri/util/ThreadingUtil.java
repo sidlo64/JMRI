@@ -287,7 +287,7 @@ public class ThreadingUtil {
     static public Timer runOnGUIDelayed(@Nonnull ThreadAction ta, int delay) {
         // dispatch to Swing via timer
         Timer timer = new Timer(delay, (ActionEvent e) -> {
-            ta.run();
+            runOnGUIEventually(ta);
         });
         timer.setRepeats(false);
         timer.start();
