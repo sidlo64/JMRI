@@ -896,6 +896,8 @@ public class AddressPanel extends JInternalFrame implements ThrottleListener, Pr
             if (((Boolean) evt.getOldValue()) && (!((Boolean) evt.getNewValue()))) {
                 log.debug("propertyChange: ThrottleConnected to false");
                 notifyThrottleDisposed();
+                // remove all listeners and destroy the throttle
+                destroy();
                 throttle = null;
                 consistThrottle = null;
             }
