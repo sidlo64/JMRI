@@ -1481,8 +1481,8 @@ Command sequences should also be enclose in "strong" formatting.    jerryg2003 2
       "logger" in the operations directory. For each day's session the program will create a new
       file (.csv) using the day's date and the file will include all of the rolling stock movements
       for that day. Use a program like Microsoft Excel to view the file. The program will also
-      create and maintain a separate file for each car's history and it can be also found in the
-      "logger" directory in a second directory called "rollingStock".
+      create and maintain a separate file for each locomotive and car, and it can be also found in
+      the "logger" directory in a second directory called "rollingStock".
 
       <h3 id="ManifestOptions">Custom Manifests and Switch Lists</h3>
 
@@ -1722,7 +1722,7 @@ Command sequences should also be enclose in "strong" formatting.    jerryg2003 2
         </tr>
       </table>
 
-      <p>Time uses the format Hour:Minute.</p>
+      <p>Time uses the format day:hour:minute.</p>
 
       <p>The car parameters for pick up car (PC) and set out car (SC) are: road, number, type,
         length, load, color, location name, track name, destination name, destination track name,
@@ -4183,6 +4183,9 @@ Command sequences should also be enclose in "strong" formatting.    jerryg2003 2
       also sort the table by clicking on any of the column headings. To perform a double sort,
       select the first sort by selecting one of the "Sort by" radio buttons, then click on the final
       sort by clicking on one of the column headings.
+
+      <p>Also note that clicking on the Number column heading provides an alphanumeric sort,
+        where as clicking on the Number radio button provides an ascending sort by car number.</p>
 
       <h4>Final Destination or FD</h4>
       A car when assigned to a train is given a destination or the location where the car is to be
