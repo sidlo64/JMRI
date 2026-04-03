@@ -1,8 +1,21 @@
 package jmri.jmrit.throttle;
 
+import jmri.DccThrottle;
+import jmri.InstanceManager;
+import jmri.LocoAddress;
+import jmri.ThrottleListener;
+import jmri.ThrottleManager;
 import jmri.util.JUnitUtil;
 
 import org.junit.jupiter.api.*;
+
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import java.beans.PropertyChangeEvent;
+
+
 
 /**
  * Test simple functioning of AddressPanel
@@ -11,10 +24,24 @@ import org.junit.jupiter.api.*;
  */
 public class AddressPanelTest {
 
+    private DccThrottle throttle;
     @Test
     public void testCtor() {
         AddressPanel panel = new AddressPanel(null);
         Assertions.assertNotNull( panel, "exists");
+    }
+
+    @Test
+    public void testDisconnect() {
+        ThrottleManager tm = InstanceManager.getDefault(ThrottleManager.class);
+        int locoAddress = 1234;
+        AddressPanel panel = new AddressPanel(tm);
+        assertEquals( 0, tm.getThrottleUsageCount(locoAddress), "Throttle is used 0 times");
+        panel.setAddress(locoAddress, false);
+        assertEquals( 1, tm.getThrottleUsageCount(locoAddress), "Throttle is used 1 times");
+        PropertyChangeEvent pce = new PropertyChangeEvent(this,"ThrottleConnected", true, false);
+        panel.propertyChange(pce);
+        assertEquals( 0, tm.getThrottleUsageCount(locoAddress), "Throttle is used 0 times");
     }
 
     @BeforeEach
@@ -22,6 +49,7 @@ public class AddressPanelTest {
         JUnitUtil.setUp();
         JUnitUtil.resetProfileManager();
         JUnitUtil.initRosterConfigManager();
+        JUnitUtil.initDebugThrottleManager();
     }
 
     @AfterEach
