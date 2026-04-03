@@ -1,6 +1,5 @@
 package jmri.jmrit.throttle;
 
-import jmri.DccThrottle;
 import jmri.InstanceManager;
 import jmri.ThrottleManager;
 import jmri.util.JUnitUtil;
