@@ -11,7 +11,7 @@ import javax.annotation.*;
 /**
  * Navigation through a LayoutEditor panel to set the sound position.
  *
- * Almost all code from George Warner's LENavigator.
+ * Almost all code from George Warner's LENavigator. 
  * ------------------------------------------------
  * Added direction change feature with new methods
  * setReturnTrack(T), setReturnLastTrack(T) and
@@ -34,7 +34,7 @@ import javax.annotation.*;
  * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
  * for more details.
  *
- * @author Klaus Killinger Copyright (C) 2022, 2023
+ * @author Klaus Killinger Copyright (C) 2022, 2023, 2026
  */
 public class VSDNavigation {
 
@@ -717,7 +717,6 @@ public class VSDNavigation {
     }
 
     boolean navigateLayoutTurntable() {
-        boolean result = false;
         if (use_blocks && !((LayoutTurntable) d.getLayoutTrack()).getBlockName().equals(VSDecoderManager.instance().currentBlock.get(d).getUserName())) {
             // we are not in the block
             d.setDistance(0);
@@ -811,14 +810,94 @@ public class VSDNavigation {
             }
         }
 
+        return navigateComplexTrack(pStart, pEnd, distanceOnTrack);
+    }
+
+    boolean navigateLayoutTraverser() {
+        if (use_blocks && !((LayoutTraverser) d.getLayoutTrack()).getBlockName().equals(VSDecoderManager.instance().currentBlock.get(d).getUserName())) {
+            // we are not in the block
+            d.setDistance(0);
+            return false;
+        }
+
+        double distanceOnTrack = d.getDistance() + d.distanceOnTrack;
+        d.nextLayoutTrack = null;
+
+        LayoutTraverser traverser = (LayoutTraverser) d.getLayoutTrack();
+        LayoutTraverserView trv = d.getModels().getLayoutTraverserView(traverser);
+        int num_slots = traverser.getNumberSlots();
+        log.debug("traverser name: {}, number slots: {}", trv.getName(), num_slots);
+
+        Point2D pStart = null;
+        Point2D pEnd = null;
+
+        if (num_slots < 1) {
+            log.warn("A traverser must have at least one slot");
+        } else if (traverser.getPosition() < 0) {
+            log.warn("Traverser position not set, pos: {}", traverser.getPosition());
+        } else {
+            int currentPosition = traverser.getPosition();
+            int entrySlot = -1;
+            for (int i = 0; i < num_slots; i++) {
+                if (traverser.getSlotConnectOrdered(i) == d.getLastTrack()) {
+                    entrySlot = i;
+                    break;
+                }
+            }
+
+            if (entrySlot != -1) {
+                // Find the corresponding exit slot. Traverser slots are in pairs.
+                int exitSlot = (entrySlot % 2 == 0) ? entrySlot + 1 : entrySlot - 1;
+                log.debug("entryslot: {}, exitslot: {}, current position: {}", entrySlot, exitSlot, currentPosition);
+
+                if (exitSlot >= 0 && exitSlot < num_slots) {
+                    // Check if the deck is aligned to the exit slot
+                    if (traverser.getSlotIndex(exitSlot) == currentPosition) {
+                        pStart = trv.getSlotCoordsIndexed(entrySlot);
+                        pEnd = trv.getSlotCoordsIndexed(exitSlot);
+                        d.nextLayoutTrack = traverser.getSlotConnectOrdered(exitSlot);
+                    } else if (exitSlot %2 == currentPosition %2) { 
+                        // Deck position has moved up or down
+                        if (entrySlot < exitSlot) {
+                            pStart = trv.getSlotCoordsIndexed(currentPosition - 1);
+                        } else {
+                            pStart = trv.getSlotCoordsIndexed(currentPosition + 1);
+                        }
+                        pEnd = trv.getSlotCoordsIndexed(currentPosition);
+                        d.nextLayoutTrack = traverser.getSlotConnectOrdered(currentPosition);
+                        log.debug("next track: {}", d.nextLayoutTrack);
+                    } else {
+                        log.warn("Traverser not aligned for exit. Current pos: {}, required for exit slot {}: {}", currentPosition, exitSlot, traverser.getSlotIndex(exitSlot));
+                    }
+
+                }
+            }
+        }
+
+        return navigateComplexTrack(pStart, pEnd, distanceOnTrack);
+    }
+
+    /**
+     * Common navigation logic for complex tracks like Turntables and Traversers.
+     *
+     * @param pStart          The starting point of movement on the component.
+     * @param pEnd            The ending point of movement on the component.
+     * @param distanceOnTrack The total distance to travel.
+     * @return True if navigation should continue to the next track piece.
+     */
+    private boolean navigateComplexTrack(Point2D pStart, Point2D pEnd, double distanceOnTrack) {
+        boolean result = false;
+        String tType = "";
+        if (d.getLayoutTrack() instanceof LayoutTraverser) {
+            tType = "Traverser";
+        } else {
+            tType = "Turntable";
+        }
+
         if (d.nextLayoutTrack != null) {
             d.setReturnLastTrack(d.nextLayoutTrack);
             d.setReturnTrack(d.getLayoutTrack()); // just in case of a direction change
             d.setDistance(0);
-        }
-        if (d.nextLayoutTrack == null) {
-            log.debug("Next layout track not set");
-            result = false;
         }
 
         if (pStart != null && pEnd != null) {
@@ -833,10 +912,10 @@ public class VSDNavigation {
             } else { // it's not on this track
                 d.setDistance(distanceOnTrack - distance);
                 distanceOnTrack = 0;
-                result = true;
+                result = true; // move to next track
             }
         } else { // OOPS! we're lost!
-            log.info("Turntable caused a stop"); // correct position or change direction
+            log.info("A {} setting caused a stop", tType); // correct position or change direction
             result = false;
             distanceOnTrack = 0;
             d.setDistance(0);
@@ -852,9 +931,9 @@ public class VSDNavigation {
             LayoutTrack last = d.getLayoutTrack();
             if (d.nextLayoutTrack != null) {
                 d.setLayoutTrack(d.nextLayoutTrack);
-                lastTurntablePosition = -1;
-            } else { // OOPS! we're lost!
-                log.info(" TURNTABLE RESULT lost");
+                if (tType.equals("Turntable")) lastTurntablePosition = -1;
+            } else {
+                log.info("Lost a {} result", tType);
                 result = false;
             }
             if (result) {
