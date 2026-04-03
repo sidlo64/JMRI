@@ -2,8 +2,6 @@ package jmri.jmrit.throttle;
 
 import jmri.DccThrottle;
 import jmri.InstanceManager;
-import jmri.LocoAddress;
-import jmri.ThrottleListener;
 import jmri.ThrottleManager;
 import jmri.util.JUnitUtil;
 
@@ -11,7 +9,6 @@ import org.junit.jupiter.api.*;
 
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.beans.PropertyChangeEvent;
 
@@ -24,7 +21,6 @@ import java.beans.PropertyChangeEvent;
  */
 public class AddressPanelTest {
 
-    private DccThrottle throttle;
     @Test
     public void testCtor() {
         AddressPanel panel = new AddressPanel(null);
