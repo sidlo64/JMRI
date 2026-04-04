@@ -30,8 +30,17 @@ public class WindowMenu extends JMenu implements javax.swing.event.MenuListener 
         addMenuListener(this);
     }
 
+    /**
+     * Provide a list of JmriJFrame titles that will -not- appear
+     * in the Windows menu.  Those frames may or may not remain visible,
+     * but they won't be selectable from the menu.
+     */
     static public void setIgnoredFrames(List<String> frames) {
         ignoredFrames = new ArrayList<>(frames);
+    }
+    
+    static public List<String> getIgnoredFrames() {
+        return new ArrayList<>(ignoredFrames);
     }
     
     @Override
