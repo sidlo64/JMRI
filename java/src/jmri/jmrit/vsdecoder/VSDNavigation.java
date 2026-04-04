@@ -735,77 +735,49 @@ public class VSDNavigation {
         Point2D pEnd   = null;
 
         // some checks ...
-        if (num_rays < 1) {
-            log.warn("A turntable must have at least one ray (better two)");
+        if (num_rays < 2) {
+            // A turntable must have a ray track at a 180 degree offset for each ray track
+            log.warn("A turntable must have at least two ray tracks)");
+        } else if (num_rays %2 != 0) {
+            log.warn("A turntable must have an even number of rays");
         } else if (turntable.getPosition() < 0) {
-            log.warn("Turntable position not set"); // setting the correct position allows to continue
+            log.warn("Turntable position not set, pos: {}", turntable.getPosition()); // setting the correct position allows to continue
         } else {
-            List<Point2D> points = new ArrayList<>();
-            for (int i = 0; i < num_rays; i++) {
-                points.add(ttv.getRayCoordsOrdered(i));
+            int currentPosition = turntable.getPosition();
+            int entryRay = -1;
+            int exitRay = -1;
+            if (lastTurntablePosition != -1 && lastTurntablePosition != currentPosition) {
+                // new bridge position detected
+                List<Double> angles = new ArrayList<>();
+                turntable.getRayTrackList().forEach((rt) -> angles.add(rt.getAngle()));
+                entryRay = angles.indexOf(MathUtil.wrap360(angles.get(currentPosition) + 180.0));
+                if (entryRay != -1) {
+                    d.setLastTrack(turntable.getRayConnectOrdered(entryRay));
+                    d.nextLayoutTrack = turntable.getRayConnectIndexed(currentPosition);
+                } else {
+                    log.warn("Counter ray for ray track angle {} not found", angles.get(currentPosition));
+                }
+            } else {
+                for (int i = 0; i < num_rays; i++) {
+                    if (turntable.getRayConnectOrdered(i) == d.getLastTrack()) {
+                        entryRay = i;
+                        break;
+                    }
+                }
             }
+            exitRay = turntable.getPosition();
 
-            for (LayoutTurntable.RayTrack rt : turntable.getRayTrackList()) {
-                if (rt.getConnect().equals(d.getLastTrack())) {
-                    // is there a counter-ray? If so, get this index
-                    double counterAngle = MathUtil.wrap360(rt.getAngle() + 180.0);
-                    boolean found = false;
-                    int indexT = -1; // init
-                    for (LayoutTurntable.RayTrack rta : turntable.getRayTrackList()) {
-                        if (counterAngle == rta.getAngle()) {
-                            found = true; // yes, counter-ray exists
-                            indexT = rta.getConnectionIndex();
-                            break;
-                        }
-                    }
-                    if (!found) {
-                        // ray without counter-ray - not supported (there is no HitPoint for the bridge end)
-                        if (turntable.getPosition() == rt.getConnectionIndex()) {
-                            log.warn("non-existent opposite ray track; please return"); // going reverse works
-                        } else {
-                            log.warn("Wrong turntable position - please correct or return");
-                        }
-                    } else {
-                        boolean is_turned = false;
-                        int indexH = rt.getConnectionIndex();
-                        if (lastTurntablePosition >= 0 && turntable.getPosition() != lastTurntablePosition) {
-                            // new bridge position detected
-                            is_turned = true;
-                            double newAngle = turntable.getRayTrackList().get(turntable.getPosition()).getAngle();
-                            double lastAngle = MathUtil.wrap360(newAngle + 180.0);
-                            boolean found2 = false;
-                            for (LayoutTurntable.RayTrack rtb : turntable.getRayTrackList()) {
-                                if (lastAngle == rtb.getAngle()) {
-                                    found2 = true; // yes, counter-ray exists
-                                    indexH = rtb.getConnectionIndex();
-                                    break;
-                                }
-                            }
-                            if (found2) {
-                                d.setLastTrack(turntable.getRayConnectIndexed(indexH));
-                                d.nextLayoutTrack = turntable.getRayConnectIndexed(turntable.getPosition());
-                                indexT = turntable.getPosition(); // update index
-                            } else {
-                                log.info("non-existent opposite ray track)");
-                            }
-                        }
-
-                        if (turntable.getPosition() == indexT || turntable.getPosition() == indexH) {
-                            // turntable position is correct
-                            pStart = points.get(indexH);
-                            if (is_turned) {
-                                pEnd = points.get(turntable.getPosition());
-                            } else {
-                                pEnd = points.get(indexT);
-                            }
-                            d.nextLayoutTrack = turntable.getRayConnectIndexed(indexT);
-                            log.debug("Next layout track set to: {}", d.nextLayoutTrack);
-                            lastTurntablePosition = turntable.getPosition();
-                        } else {
-                            log.warn("Wrong turntable position - please correct position");
-                        }
-                    }
-                    break;
+            if (entryRay >= 0 && entryRay < num_rays && entryRay != exitRay) {
+                log.debug("entryray: {}, exitray: {}, current position: {}", entryRay, exitRay, currentPosition);
+                if (exitRay == currentPosition) {
+                    pStart = ttv.getRayCoordsIndexed(entryRay);
+                    pEnd = ttv.getRayCoordsIndexed(currentPosition);
+                    d.setLastTrack(turntable.getRayConnectIndexed(entryRay));
+                    d.nextLayoutTrack = turntable.getRayConnectIndexed(exitRay);
+                    lastTurntablePosition = turntable.getPosition();
+                    log.debug("Next layout track set to: {}, last track: {}", d.nextLayoutTrack, d.getLastTrack());
+                } else {
+                    log.warn("Turntable not aligned for exit. Current pos: {}, required for exit ray {}: {}", currentPosition, exitRay, turntable.getRayIndex(exitRay));
                 }
             }
         }
