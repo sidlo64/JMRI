@@ -666,7 +666,7 @@ Update Decoder Definitins is highly recommended</li>
    <h3>Virtual Sound Decoder</h3>
         <a id="VSD" name="VSD"></a>
         <ul>
-            <li></li>
+            <li>Added LayoutEditor Traverser support for VSD navigation through a panel.</li>
         </ul>
 
    <h3>Z21 Server</h3>
